@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="vodagone:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="vodagone.war">
+      <element id="artifact" artifact-name="vodagone:war exploded" />
+    </root>
+  </artifact>
+</component>
