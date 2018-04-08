@@ -57,7 +57,9 @@ public class AbonneeAbonnement implements MappableObject {
 	}
 
 	public void setStatus (String status) {
-		this.status = status;
+		if (status.equals ("proef") || status.equals ("standaard") || status.equals ("opgezegd")) {
+			this.status = status;
+		}
 	}
 
 	public String getVerdubbeling () {

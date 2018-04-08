@@ -92,9 +92,24 @@ public class AbonneeAbonnementMapper {
 		return null;
 	}
 
-	public void update () {
+	public boolean update () {
+		return false;
 	}
 
-	public void delete () {
+	public boolean delete (AbonneeAbonnement abonneeAbonnement) {
+		if (abonneeAbonnement != null) {
+			try {
+				PreparedStatement st = dataAccess.getConnection ().prepareStatement ("UPDATE AbonneeAbonnement SET status = 'opgezegd' WHERE id = ?");
+				st.setInt (1, abonneeAbonnement.getId ());
+				st.executeUpdate ();
+				abonneeAbonnement.setStatus ("opgezegd");
+				identityMapper.addToIdentityMap (abonneeAbonnement);
+				return true;
+			} catch (SQLException e) {
+				e.printStackTrace ();
+				return false;
+			}
+		}
+		return false;
 	}
 }

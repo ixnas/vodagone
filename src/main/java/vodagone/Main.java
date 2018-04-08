@@ -110,6 +110,13 @@ public class Main {
 		return getAbonnementen ().get (token, id);
 	}
 
+	@Path ("abonnementen/{id}")
+	@DELETE
+	@Produces (MediaType.APPLICATION_JSON)
+	public Response terminateAbonnementById (@QueryParam ("token") String token, @PathParam ("id") int id) {
+		return getAbonnementen ().terminate (token, id);
+	}
+
 	@Path ("abonnees")
 	@GET
 	@Produces (MediaType.APPLICATION_JSON)

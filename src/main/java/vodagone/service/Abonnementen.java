@@ -1,6 +1,5 @@
 package vodagone.service;
 
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.text.DateFormat;
@@ -16,9 +15,6 @@ import vodagone.domain.Abonnement;
 import vodagone.data.AbonnementMapper;
 import vodagone.domain.TokenService;
 
-/**
- * Root resource (exposed at "myresource" path)
- */
 public class Abonnementen {
 
 	TokenService tokenService;
@@ -34,18 +30,22 @@ public class Abonnementen {
 	private float berekenTotalPrice (ArrayList <AbonneeAbonnement> abonneeAbonnementen) {
 		float totalPrice = 0;
 		for (AbonneeAbonnement abonneeAbonnement : abonneeAbonnementen)
-			totalPrice += abonneeAbonnement.getAbonnement ().getPrijsPerMaand ();
+			if (!abonneeAbonnement.getStatus ().equals ("opgezegd")) {
+				totalPrice += abonneeAbonnement.getAbonnement ().getPrijsPerMaand ();
+			}
 		return totalPrice;
 	}
 
 	private JSONArray vulAbonnementenArray (ArrayList <AbonneeAbonnement> abonneeAbonnementen) {
 		JSONArray abonnementenArray = new JSONArray ();
 		for (AbonneeAbonnement abonneeAbonnement : abonneeAbonnementen) {
-			JSONObject abonnementObject = new JSONObject ();
-			abonnementObject.put ("id", abonneeAbonnement.getId ());
-			abonnementObject.put ("aanbieder", abonneeAbonnement.getAbonnement ().getAanbieder ());
-			abonnementObject.put ("dienst", abonneeAbonnement.getAbonnement ().getNaam ());
-			abonnementenArray.add (abonnementObject);
+			if (!abonneeAbonnement.getStatus ().equals ("opgezegd")) {
+				JSONObject abonnementObject = new JSONObject ();
+				abonnementObject.put ("id", abonneeAbonnement.getId ());
+				abonnementObject.put ("aanbieder", abonneeAbonnement.getAbonnement ().getAanbieder ());
+				abonnementObject.put ("dienst", abonneeAbonnement.getAbonnement ().getNaam ());
+				abonnementenArray.add (abonnementObject);
+			}
 		}
 		return abonnementenArray;
 	}
@@ -155,7 +155,29 @@ public class Abonnementen {
 				return ErrorMessenger.generate (400, "Bad Request");
 			} catch (Exception e) {
 				e.printStackTrace ();
-				return ErrorMessenger.generate (400, "Not Found");
+				return ErrorMessenger.generate (404, "Not Found");
+			}
+		}
+		return ErrorMessenger.generate (400, "Bad Request");
+	}
+
+	public Response terminate (String token, int id) {
+		Integer abonneeId = tokenService.getAbonneeIdByToken (token);
+		AbonneeAbonnement abonneeAbonnement = abonneeAbonnementMapper.read (id);
+		if (abonneeId != null && abonneeAbonnement != null) {
+			if (abonneeAbonnement.getStatus ().equals ("opgezegd")) {
+				return ErrorMessenger.generate (400, "Bad Request");
+			}
+			if (abonneeAbonnement.getAbonnee ().getId () == abonneeId) {
+				try {
+					if (abonneeAbonnementMapper.delete (abonneeAbonnement)) {
+						return ErrorMessenger.generate (200, "Deleted");
+					}
+					return ErrorMessenger.generate (400, "Bad Request");
+				} catch (Exception e) {
+					e.printStackTrace ();
+					return ErrorMessenger.generate (400, "Bad Request");
+				}
 			}
 		}
 		return ErrorMessenger.generate (400, "Bad Request");
