@@ -8,7 +8,7 @@ import javax.ws.rs.core.Response;
 
 public class Login {
 
-	TokenService tokenService;
+	private TokenService tokenService;
 
 	public Login (TokenService tokenService) {
 		this.tokenService = tokenService;

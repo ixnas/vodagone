@@ -16,9 +16,9 @@ import vodagone.data.IAbonnementMapper;
 
 public class Abonnementen {
 
-	TokenService tokenService;
-	IAbonnementMapper abonnementMapper;
-	IAbonneeAbonnementMapper abonneeAbonnementMapper;
+	private TokenService tokenService;
+	private IAbonnementMapper abonnementMapper;
+	private IAbonneeAbonnementMapper abonneeAbonnementMapper;
 
 	private String genereerError (String error) {
 		JSONObject errorMessage = new JSONObject ();

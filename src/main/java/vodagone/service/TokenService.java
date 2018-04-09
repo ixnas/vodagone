@@ -8,8 +8,8 @@ import java.util.ArrayList;
 
 public class TokenService {
 
-	IAbonneeMapper abonneeMapper;
-	ArrayList<Token> tokens;
+	private IAbonneeMapper abonneeMapper;
+	private ArrayList<Token> tokens;
 
 	public TokenService (IAbonneeMapper abonneeMapper) {
 		this.abonneeMapper = abonneeMapper;
