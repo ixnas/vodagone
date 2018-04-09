@@ -9,16 +9,16 @@ import java.util.ArrayList;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
-import vodagone.data.AbonneeAbonnementMapper;
+import vodagone.data.IAbonneeAbonnementMapper;
 import vodagone.domain.AbonneeAbonnement;
 import vodagone.domain.Abonnement;
-import vodagone.data.AbonnementMapper;
+import vodagone.data.IAbonnementMapper;
 
 public class Abonnementen {
 
 	TokenService tokenService;
-	AbonnementMapper abonnementMapper;
-	AbonneeAbonnementMapper abonneeAbonnementMapper;
+	IAbonnementMapper abonnementMapper;
+	IAbonneeAbonnementMapper abonneeAbonnementMapper;
 
 	private String genereerError (String error) {
 		JSONObject errorMessage = new JSONObject ();
@@ -90,7 +90,7 @@ public class Abonnementen {
 		return abonnementenJSON.toJSONString ();
 	}
 
-	public Abonnementen (AbonnementMapper abonnementMapper, AbonneeAbonnementMapper abonneeAbonnementMapper, TokenService tokenService) {
+	public Abonnementen (IAbonnementMapper abonnementMapper, IAbonneeAbonnementMapper abonneeAbonnementMapper, TokenService tokenService) {
 		this.abonnementMapper = abonnementMapper;
 		this.abonneeAbonnementMapper = abonneeAbonnementMapper;
 		this.tokenService = tokenService;

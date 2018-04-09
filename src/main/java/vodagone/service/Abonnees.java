@@ -3,9 +3,9 @@ package vodagone.service;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import vodagone.data.AbonneeAbonnementMapper;
+import vodagone.data.IAbonneeAbonnementMapper;
+import vodagone.data.IAbonneeMapper;
 import vodagone.domain.Abonnee;
-import vodagone.data.AbonneeMapper;
 import vodagone.domain.AbonneeAbonnement;
 
 import javax.ws.rs.core.MediaType;
@@ -15,8 +15,8 @@ import java.util.ArrayList;
 public class Abonnees {
 
 	private TokenService tokenService;
-	private AbonneeMapper abonneeMapper;
-	private AbonneeAbonnementMapper abonneeAbonnementMapper;
+	private IAbonneeMapper abonneeMapper;
+	private IAbonneeAbonnementMapper abonneeAbonnementMapper;
 
 	private String genereerAbonneesJSON (ArrayList <Abonnee> abonnees) {
 		JSONArray abonneesJSON = new JSONArray ();
@@ -38,7 +38,7 @@ public class Abonnees {
 		return abonneeJSON.toJSONString ();
 	}
 
-	public Abonnees (AbonneeMapper abonneeMapper, AbonneeAbonnementMapper abonneeAbonnementMapper, TokenService tokenService) {
+	public Abonnees (IAbonneeMapper abonneeMapper, IAbonneeAbonnementMapper abonneeAbonnementMapper, TokenService tokenService) {
 		this.abonneeMapper = abonneeMapper;
 		this.abonneeAbonnementMapper = abonneeAbonnementMapper;
 		this.tokenService = tokenService;
