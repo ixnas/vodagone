@@ -39,6 +39,6 @@ public class Abonnee implements MappableObject {
 	}
 
 	public void setWachtwoord (String wachtwoord) {
-		this.email = wachtwoord;
+		this.wachtwoord = wachtwoord;
 	}
 }

@@ -1,17 +1,17 @@
 package vodagone.service;
 
 import org.json.simple.JSONObject;
-import vodagone.data.AbonneeMapper;
+import vodagone.data.IAbonneeMapper;
 import vodagone.domain.Abonnee;
 
 import java.util.ArrayList;
 
 public class TokenService {
 
-	AbonneeMapper abonneeMapper;
+	IAbonneeMapper abonneeMapper;
 	ArrayList<Token> tokens;
 
-	public TokenService (AbonneeMapper abonneeMapper) {
+	public TokenService (IAbonneeMapper abonneeMapper) {
 		this.abonneeMapper = abonneeMapper;
 		this.tokens = new ArrayList<Token> ();
 	}

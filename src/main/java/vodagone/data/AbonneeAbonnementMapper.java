@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 
-public class AbonneeAbonnementMapper {
+public class AbonneeAbonnementMapper implements IAbonneeAbonnementMapper{
 
 	private DataAccess dataAccess;
 	private AbonneeMapper abonneeMapper;

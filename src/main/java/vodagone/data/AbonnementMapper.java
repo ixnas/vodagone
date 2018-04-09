@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class AbonnementMapper {
+public class AbonnementMapper implements IAbonnementMapper {
 
 	private DataAccess dataAccess;
 	private IdentityMapper identityMapper;
@@ -18,7 +18,6 @@ public class AbonnementMapper {
 	}
 
 	public void create (Abonnement abonnement) {
-
 	}
 
 	public Abonnement read (int id) {
@@ -26,7 +25,7 @@ public class AbonnementMapper {
 			Abonnement abonnement = null;
 			try {
 				PreparedStatement st = dataAccess.getConnection ().prepareStatement ("SELECT * FROM Abonnement WHERE id = ?");
-				st.setInt(1, id);
+				st.setInt (1, id);
 				ResultSet rs = dataAccess.query (st);
 				while (rs.next ())
 					abonnement = new Abonnement (
@@ -46,8 +45,8 @@ public class AbonnementMapper {
 		return (Abonnement) identityMapper.getFromIdentityMap (id);
 	}
 
-	public ArrayList<Abonnement> readAll () {
-		ArrayList<Abonnement> result = new ArrayList<Abonnement> ();
+	public ArrayList <Abonnement> readAll () {
+		ArrayList <Abonnement> result = new ArrayList <Abonnement> ();
 		identityMapper.clearIdentityMap ();
 		try {
 			ResultSet rs = dataAccess.query (dataAccess.getConnection ().prepareStatement ("SELECT * FROM Abonnement"));
@@ -60,23 +59,23 @@ public class AbonnementMapper {
 						rs.getBoolean ("deelbaar"),
 						rs.getBoolean ("verdubbeling")
 				));
-			for (int i = 0; i < result.size(); i++)
-				identityMapper.addToIdentityMap (result.get(i));
+			for (int i = 0; i < result.size (); i++)
+				identityMapper.addToIdentityMap (result.get (i));
 		} catch (SQLException e) {
 			System.out.println ("Fokt op");
 		}
 		return result;
 	}
 
-	public ArrayList<Abonnement> readFilter (String filter) {
+	public ArrayList <Abonnement> readFilter (String filter) {
 		if (filter == null) return readAll ();
-		ArrayList<Abonnement> result = new ArrayList<Abonnement> ();
+		ArrayList <Abonnement> result = new ArrayList <Abonnement> ();
 		try {
 			filter = filter
-					.replace("!", "!!")
-					.replace("%", "!%")
-					.replace("_", "!_")
-					.replace("[", "![");
+					.replace ("!", "!!")
+					.replace ("%", "!%")
+					.replace ("_", "!_")
+					.replace ("[", "![");
 			PreparedStatement st = dataAccess.getConnection ().prepareStatement ("SELECT * FROM Abonnement WHERE aanbieder LIKE ? OR naam LIKE ?");
 			st.setString (1, "%" + filter + "%");
 			st.setString (2, "%" + filter + "%");
