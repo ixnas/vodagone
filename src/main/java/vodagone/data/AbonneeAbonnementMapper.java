@@ -7,6 +7,7 @@ import vodagone.domain.Abonnement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 
 public class AbonneeAbonnementMapper {
@@ -92,7 +93,26 @@ public class AbonneeAbonnementMapper {
 		return null;
 	}
 
-	public boolean update () {
+	public boolean update (AbonneeAbonnement abonneeAbonnement) {
+		if (abonneeAbonnement != null) {
+			try {
+				PreparedStatement st = dataAccess.getConnection ().prepareStatement ("UPDATE AbonneeAbonnement SET verdubbeling = ?, gedeeldMet = ? WHERE id = ?");
+				st.setString (1, abonneeAbonnement.getVerdubbeling ());
+				if (abonneeAbonnement.getGedeeldMet () == null) {
+					st.setNull (2, Types.INTEGER);
+				} else {
+					// check of de gedeelde persoon bestaat
+					st.setInt (2, abonneeAbonnement.getGedeeldMet ());
+				}
+				st.setInt (3, abonneeAbonnement.getId ());
+				st.executeUpdate ();
+				identityMapper.addToIdentityMap (abonneeAbonnement);
+				return true;
+			} catch (SQLException e) {
+				e.printStackTrace ();
+				return false;
+			}
+		}
 		return false;
 	}
 

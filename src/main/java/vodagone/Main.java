@@ -92,7 +92,7 @@ public class Main {
 	@GET
 	@Produces (MediaType.APPLICATION_JSON)
 	public Response getAbonnementenAllFromUser (@QueryParam ("token") String token) {
-		return getAbonnementen ().getAllFromUser (token);
+		return getAbonnementen ().getAllFromUser (token, false);
 	}
 
 	@Path ("abonnementen")
@@ -108,6 +108,14 @@ public class Main {
 	@Produces (MediaType.APPLICATION_JSON)
 	public Response getAbonnementById (@QueryParam ("token") String token, @PathParam ("id") int id) {
 		return getAbonnementen ().get (token, id);
+	}
+
+	@Path ("abonnementen/{id}")
+	@POST
+	@Consumes (MediaType.APPLICATION_JSON)
+	@Produces (MediaType.APPLICATION_JSON)
+	public Response getAbonnementById (String body, @QueryParam ("token") String token, @PathParam ("id") int id) {
+		return getAbonnementen ().upgrade (body, token, id);
 	}
 
 	@Path ("abonnementen/{id}")

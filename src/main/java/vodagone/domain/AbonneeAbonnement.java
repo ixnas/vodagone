@@ -10,6 +10,7 @@ public class AbonneeAbonnement implements MappableObject {
 	private Date startDatum;
 	private String status;
 	private String verdubbeling;
+	private Integer gedeeldMet;
 
 	public AbonneeAbonnement (int id, Abonnee abonnee, Abonnement abonnement, Date startDatum, String status, String verdubbeling) {
 		this.id = id;
@@ -18,6 +19,7 @@ public class AbonneeAbonnement implements MappableObject {
 		this.startDatum = startDatum;
 		this.status = status;
 		this.verdubbeling = verdubbeling;
+		this.gedeeldMet = null;
 	}
 
 	public int getId () {
@@ -67,7 +69,17 @@ public class AbonneeAbonnement implements MappableObject {
 	}
 
 	public void setVerdubbeling (String verdubbeling) {
-		this.verdubbeling = verdubbeling;
+		if (verdubbeling.equals ("verdubbeld") || verdubbeling.equals ("standaard")) {
+			this.verdubbeling = verdubbeling;
+		}
+	}
+
+	public Integer getGedeeldMet () {
+		return gedeeldMet;
+	}
+
+	public void setGedeeldMet (Integer gedeeldMet) {
+		this.gedeeldMet = gedeeldMet;
 	}
 
 	public String getEmail () {

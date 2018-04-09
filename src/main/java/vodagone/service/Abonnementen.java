@@ -31,7 +31,11 @@ public class Abonnementen {
 		float totalPrice = 0;
 		for (AbonneeAbonnement abonneeAbonnement : abonneeAbonnementen)
 			if (!abonneeAbonnement.getStatus ().equals ("opgezegd")) {
-				totalPrice += abonneeAbonnement.getAbonnement ().getPrijsPerMaand ();
+				float prijs = abonneeAbonnement.getAbonnement ().getPrijsPerMaand ();
+				if (abonneeAbonnement.getVerdubbeling ().equals ("verdubbeld")) {
+					prijs = prijs * 2;
+				}
+				totalPrice += prijs;
 			}
 		return totalPrice;
 	}
@@ -59,11 +63,15 @@ public class Abonnementen {
 
 	private String genereerAbonnementJSON (AbonneeAbonnement abonneeAbonnement) {
 		JSONObject abonnementenJSON = new JSONObject ();
+		float prijs = abonneeAbonnement.getAbonnement ().getPrijsPerMaand ();
+		if (abonneeAbonnement.getVerdubbeling ().equals ("verdubbeld")) {
+			prijs = prijs * 2;
+		}
 		DateFormat df = new SimpleDateFormat ("yyyy-MM-dd");
 		abonnementenJSON.put ("id", abonneeAbonnement.getId ());
 		abonnementenJSON.put ("aanbieder", abonneeAbonnement.getAbonnement ().getAanbieder ());
 		abonnementenJSON.put ("dienst", abonneeAbonnement.getAbonnement ().getNaam ());
-		abonnementenJSON.put ("prijs", "€" + String.format ("%.2f", abonneeAbonnement.getAbonnement ().getPrijsPerMaand ()) + " per maand");
+		abonnementenJSON.put ("prijs", "€" + String.format ("%.2f", prijs) + " per maand");
 		abonnementenJSON.put ("deelbaar", abonneeAbonnement.getAbonnement ().isDeelbaar ());
 		abonnementenJSON.put ("startDatum", df.format (abonneeAbonnement.getStartDatum ()));
 		abonnementenJSON.put ("verdubbeling", abonneeAbonnement.getVerdubbeling ());
@@ -108,11 +116,14 @@ public class Abonnementen {
 		return ErrorMessenger.generate (403, "Forbidden");
 	}
 
-	public Response getAllFromUser (String token) {
+	public Response getAllFromUser (String token, boolean created) {
 		Integer abonneeId = tokenService.getAbonneeIdByToken (token);
 		if (abonneeId != null) {
 			try {
 				ArrayList <AbonneeAbonnement> abonneeAbonnementen = abonneeAbonnementMapper.readAllFromAbonnee (abonneeId);
+				if (created) {
+					return Response.status (201).entity (genereerAbonnementenJSON (abonneeAbonnementen)).build ();
+				}
 				return Response.ok (genereerAbonnementenJSON (abonneeAbonnementen), MediaType.APPLICATION_JSON).build ();
 			} catch (Exception e) {
 				e.printStackTrace ();
@@ -145,12 +156,12 @@ public class Abonnementen {
 			try {
 				JSONParser parser = new JSONParser ();
 				JSONObject obj = (JSONObject) parser.parse (body);
-				if (obj.get("id") == null || obj.get("aanbieder") == null || obj.get ("aanbieder") == null) {
+				if (obj.get ("id") == null || obj.get ("aanbieder") == null) {
 					return ErrorMessenger.generate (400, "Bad Request");
 				}
-				int abonnementId = Math.toIntExact ((long) obj.get("id"));
+				int abonnementId = Math.toIntExact ((long) obj.get ("id"));
 				if (abonneeAbonnementMapper.create (abonneeId, abonnementId)) {
-					return ErrorMessenger.generate (201, "Created");
+					return getAllFromUser (token, true);
 				}
 				return ErrorMessenger.generate (400, "Bad Request");
 			} catch (Exception e) {
@@ -171,7 +182,7 @@ public class Abonnementen {
 			if (abonneeAbonnement.getAbonnee ().getId () == abonneeId) {
 				try {
 					if (abonneeAbonnementMapper.delete (abonneeAbonnement)) {
-						return ErrorMessenger.generate (200, "Deleted");
+						return get (token, id);
 					}
 					return ErrorMessenger.generate (400, "Bad Request");
 				} catch (Exception e) {
@@ -181,5 +192,34 @@ public class Abonnementen {
 			}
 		}
 		return ErrorMessenger.generate (400, "Bad Request");
+	}
+
+	public Response upgrade (String body, String token, int id) {
+		Integer abonneeId = tokenService.getAbonneeIdByToken (token);
+		AbonneeAbonnement abonneeAbonnement = abonneeAbonnementMapper.read (id);
+		if (abonneeId != null && abonneeAbonnement != null) {
+			if (abonneeAbonnement.getVerdubbeling ().equals ("opgezegd")) {
+				return ErrorMessenger.generate (400, "Bad Request");
+			}
+			if (abonneeAbonnement.getAbonnee ().getId () != abonneeId) {
+				return ErrorMessenger.generate (403, "Forbidden");
+			}
+			try {
+				JSONParser parser = new JSONParser ();
+				JSONObject obj = (JSONObject) parser.parse (body);
+				if (!obj.get ("verdubbeling").equals ("verdubbeld")) {
+					return ErrorMessenger.generate (400, "Bad Request");
+				}
+				abonneeAbonnement.setVerdubbeling ("verdubbeld");
+				if (abonneeAbonnementMapper.update (abonneeAbonnement)) {
+					return get (token, id);
+				} else {
+					return ErrorMessenger.generate (400, "Bad Request");
+				}
+			} catch (Exception e) {
+				return ErrorMessenger.generate (400, "Bad Request");
+			}
+		}
+		return null;
 	}
 }
