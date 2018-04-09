@@ -1,7 +1,8 @@
-package vodagone.domain;
+package vodagone.service;
 
 import org.json.simple.JSONObject;
 import vodagone.data.AbonneeMapper;
+import vodagone.domain.Abonnee;
 
 import java.util.ArrayList;
 

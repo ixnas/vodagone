@@ -1,4 +1,4 @@
-package vodagone.domain;
+package vodagone.service;
 
 import java.util.UUID;
 

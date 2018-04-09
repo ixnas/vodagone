@@ -2,7 +2,6 @@ package vodagone.service;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import vodagone.domain.TokenService;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;

@@ -1,8 +1,7 @@
 package vodagone;
 
 import vodagone.data.*;
-import vodagone.domain.AbonneeAbonnement;
-import vodagone.domain.TokenService;
+import vodagone.service.TokenService;
 import vodagone.service.Abonnees;
 import vodagone.service.Abonnementen;
 import vodagone.service.Login;
@@ -62,7 +61,7 @@ public class Main {
 
 	private Abonnees getAbonnees () {
 		if (abonnees == null) {
-			abonnees = new Abonnees (getAbonneeMapper (), getTokenService ());
+			abonnees = new Abonnees (getAbonneeMapper (), getAbonneeAbonnementMapper (), getTokenService ());
 		}
 		return abonnees;
 	}
@@ -137,6 +136,14 @@ public class Main {
 	@Produces (MediaType.APPLICATION_JSON)
 	public Response getAbonneeById (@PathParam ("id") int id) {
 		return getAbonnees ().get (id);
+	}
+
+	@Path ("abonnees/{id}")
+	@POST
+	@Consumes (MediaType.APPLICATION_JSON)
+	@Produces (MediaType.APPLICATION_JSON)
+	public Response getAbonneeById (String body, @QueryParam ("token") String token, @PathParam ("id") int id) {
+		return getAbonnees ().share (body, token, id);
 	}
 
 	@Path ("login")

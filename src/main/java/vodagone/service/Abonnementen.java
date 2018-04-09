@@ -13,7 +13,6 @@ import vodagone.data.AbonneeAbonnementMapper;
 import vodagone.domain.AbonneeAbonnement;
 import vodagone.domain.Abonnement;
 import vodagone.data.AbonnementMapper;
-import vodagone.domain.TokenService;
 
 public class Abonnementen {
 
